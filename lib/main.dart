@@ -1,8 +1,10 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import './api.dart';
 import 'dart:convert';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:http/http.dart' as http;
 
+// import './api.dart';
+// import './widgets/op_chart.dart';
 void main() {
   runApp(MyApp());
 }
@@ -13,11 +15,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String? url;
+  // String? url;
 
-  var Data;
+  // var Data;
 
-  String QueryText = 'Query';
+  // String QueryText = 'Query';
 
   // This widget is the root of your application.
   @override
@@ -25,47 +27,104 @@ class _MyAppState extends State<MyApp> {
     return SafeArea(
       child: MaterialApp(
         title: 'Circuit Simulator App',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
         home: Scaffold(
-          body: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextField(
-                  onChanged: (value) {
-                    url = 'http://10.0.2.2:5000/api?Query=$value';
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Search',
-                    suffixIcon: GestureDetector(
-                      onTap: () async {
-                        Data = await GetData(Uri.parse(url!));
+          body: MyChartPage(),
+        ),
+      ),
+    );
+  }
+}
 
-                        var DecodedData = jsonDecode(Data);
+class MyChartPage extends StatefulWidget {
+  @override
+  _MyChartPageState createState() => _MyChartPageState();
+}
 
-                        setState(() {
-                          QueryText = DecodedData['Query'];
-                        });
-                      },
-                      child: const Icon(Icons.search),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text(
-                  QueryText,
-                  style: const TextStyle(
-                      fontSize: 30, fontWeight: FontWeight.bold),
-                ),
-              )
-            ],
+class _MyChartPageState extends State<MyChartPage> {
+  List<double> timeData = [];
+  List<double> n1Data = [];
+  List<double> n2Data = [];
+
+  Future<void> fetchData() async {
+    final response =
+        await http.get(Uri.parse('http://192.168.64.214:5000/api'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      setState(() {
+        timeData = List<double>.from(data['time']);
+        n1Data = List<double>.from(data['yi']); //input data
+        n2Data = List<double>.from(data['yo']); //output data
+      });
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  LineChart buildLineChart() {
+    double maxYValue =
+        n1Data.followedBy(n2Data).reduce((a, b) => a > b ? a : b);
+    return LineChart(
+      LineChartData(
+        lineBarsData: [
+          LineChartBarData(
+            spots: List.generate(timeData.length, (index) {
+              return FlSpot(timeData[index], n1Data[index]);
+            }),
+            isCurved: true,
+            color: Colors.blue,
+            belowBarData: BarAreaData(show: false),
+          ),
+          LineChartBarData(
+            spots: List.generate(timeData.length, (index) {
+              return FlSpot(timeData[index], n2Data[index]);
+            }),
+            isCurved: true,
+            color: Colors.red,
+            belowBarData: BarAreaData(show: false),
+          ),
+        ],
+        titlesData: const FlTitlesData(
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+            ),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ElevatedButton(
+            onPressed: () async {
+              await fetchData();
+            },
+            child: const Text('Fetch Data'),
+          ),
+          const SizedBox(height: 20),
+          if (timeData.isNotEmpty && n1Data.isNotEmpty)
+            Container(
+              height: 300,
+              width: 300,
+              child: buildLineChart(),
+            ),
+        ],
       ),
     );
   }
