@@ -1,4 +1,5 @@
 import 'package:circuit_simulator/pages/circuits/negative_clipper.dart';
+import 'package:circuit_simulator/pages/circuits/ninv_opamp.dart';
 import 'package:circuit_simulator/pages/circuits/pos_posb.dart';
 import 'package:circuit_simulator/pages/circuits/positive_clipper.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ class MyMenu extends StatelessWidget {
         title: const Text('Clipper Menu'),
       ),
       body: ListView.builder(
-        itemCount: 3, // Two options in the list
+        itemCount: 4, // Two options in the list
         itemBuilder: (context, index) {
           final String optionText;
           final Widget targetWidget; // Widget to navigate to
@@ -30,6 +31,9 @@ class MyMenu extends StatelessWidget {
             case 2:
               optionText = "Positive Clipper Positive Bias";
               targetWidget = PosPosClipper();
+            case 3:
+              optionText = "Non inverting Opamp amplifier";
+              targetWidget = NinVOpamp();
             default:
               optionText = 'Unknown Option';
               targetWidget = const Scaffold(
