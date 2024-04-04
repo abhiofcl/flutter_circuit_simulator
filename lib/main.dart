@@ -1,5 +1,6 @@
 import 'package:circuit_simulator/pages/circuit_list.dart';
 import 'package:circuit_simulator/pages/tests/form_post.dart';
+import 'package:circuit_simulator/pages/tests/listtest.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/fabtest.dart';
@@ -52,7 +53,7 @@ class Welcome extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SemList(),
+                      builder: (context) => MyMenu(),
                     ),
                   );
                 },

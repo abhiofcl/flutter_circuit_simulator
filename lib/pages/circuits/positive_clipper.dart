@@ -3,15 +3,15 @@ import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:http/http.dart' as http;
 
-class MyChartPage extends StatefulWidget {
-  final int circuitkey;
+class PosClipper extends StatefulWidget {
+  // final int circuitkey;
 
-  const MyChartPage({Key? key, required this.circuitkey}) : super(key: key);
+  const PosClipper({Key? key}) : super(key: key);
   @override
-  _MyChartPageState createState() => _MyChartPageState();
+  _PosClipperState createState() => _PosClipperState();
 }
 
-class _MyChartPageState extends State<MyChartPage> {
+class _PosClipperState extends State<PosClipper> {
   final _formKey = GlobalKey<FormState>();
   double _resistorVal = 0.0;
   double _sourceVoltVal = 0.0;
@@ -48,7 +48,7 @@ class _MyChartPageState extends State<MyChartPage> {
   @override
   void initState() {
     super.initState();
-    _apiUrl = 'http://192.168.98.214:5000/api/${widget.circuitkey}';
+    _apiUrl = 'http://192.168.115.214:5000/api/clipper/2';
   }
 
   Future<void> fetchData() async {
@@ -111,9 +111,7 @@ class _MyChartPageState extends State<MyChartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: widget.circuitkey == 1
-            ? const Text("Negative Clipper")
-            : const Text("Positive clipper"),
+        title: const Text("Positive clipper"),
       ),
       body: Stack(
         children: [
