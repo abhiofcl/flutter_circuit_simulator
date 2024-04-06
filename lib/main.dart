@@ -1,5 +1,6 @@
 import 'package:circuit_simulator/pages/circuit_list.dart';
 import 'package:circuit_simulator/pages/tests/form_post.dart';
+import 'package:circuit_simulator/pages/tests/freqtest.dart';
 import 'package:circuit_simulator/pages/tests/listtest.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.blue,
             title: const Text("Circuit Simulator"),
           ),
-          body: Welcome(),
+          body: BodePlot(),
         ),
       ),
     );

@@ -112,7 +112,7 @@ class _NinVOpampState extends State<NinVOpamp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Negative clipper"),
+        title: const Text("Non inverting Amplifier"),
       ),
       body: Stack(
         children: [

@@ -12,17 +12,19 @@ class PosPosClipper extends StatefulWidget {
 }
 
 class _PosPosClipperState extends State<PosPosClipper> {
-  final _formKey = GlobalKey<FormState>();
+  final double _capacitorValue = 0.0;
+  String _showValue = '';
   double _resistorVal = 0.0;
+
+  late final String _apiUrl;
   double _sourceVoltVal = 0.0;
+  double _resistorValue = 0.0;
+  double _biasedVolt = 0.0;
+  final _formKey = GlobalKey<FormState>();
   List<double> timeData = [];
   List<double> n1Data = [];
   List<double> n2Data = [];
-  late final String _apiUrl;
   bool _showPopup = false;
-  double _resistorValue = 0.0;
-  final double _capacitorValue = 0.0;
-  String _showValue = '';
   void _openPopup() {
     setState(() {
       _showPopup = true;
@@ -41,22 +43,25 @@ class _PosPosClipperState extends State<PosPosClipper> {
       return;
     }
     _formKey.currentState!.save();
-    _showValue = 'Resistor: $_resistorValue Ω, Capacitor: $_capacitorValue F';
+    // _showValue = 'Resistor: $_resistorValue Ω, Capacitor: $_capacitorValue F';
     _closePopup();
   }
 
   @override
   void initState() {
     super.initState();
-    _apiUrl = 'http://192.168.115.214:5000/api/clamper/2';
+    _apiUrl = 'http://192.168.147.214:5000/api/bclipper/1';
   }
 
   Future<void> fetchData() async {
     final uri = Uri.parse(_apiUrl);
-    // final response = await http.post(uri,
-    //     body: jsonEncode(
-    //         {"resistorV": _resistorValue, "sourceVolt": _sourceVoltVal}));
-    final response = await http.get(uri);
+    final response = await http.post(uri,
+        body: jsonEncode({
+          "resistorV": _resistorValue,
+          "sourceVolt": _sourceVoltVal,
+          "biasedVoltVal": _biasedVolt
+        }));
+    // final response = await http.get(uri);
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       setState(() {
@@ -65,7 +70,7 @@ class _PosPosClipperState extends State<PosPosClipper> {
         n2Data = List<double>.from(data['yo']); //output data
       });
     } else {
-      throw Exception('Failed to load data');
+      print("some error");
     }
   }
 
@@ -112,7 +117,7 @@ class _PosPosClipperState extends State<PosPosClipper> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Positive clipper"),
+        title: const Text("Positive biased positive clipper"),
       ),
       body: Stack(
         children: [
@@ -187,6 +192,19 @@ class _PosPosClipperState extends State<PosPosClipper> {
                                 onSaved: (value) {
                                   setState(() {
                                     _sourceVoltVal =
+                                        double.tryParse(value!) ?? 0.0;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 10.0),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Biasing Voltage(V)',
+                                ),
+                                keyboardType: TextInputType.number,
+                                onSaved: (value) {
+                                  setState(() {
+                                    _biasedVolt =
                                         double.tryParse(value!) ?? 0.0;
                                   });
                                 },

@@ -48,7 +48,7 @@ class _PosClipperState extends State<PosClipper> {
   @override
   void initState() {
     super.initState();
-    _apiUrl = 'http://192.168.115.214:5000/api/clipper/2';
+    _apiUrl = 'http://192.168.147.214:5000/api/clipper/2';
   }
 
   Future<void> fetchData() async {
