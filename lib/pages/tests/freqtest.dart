@@ -11,18 +11,16 @@ class BodePlot extends StatefulWidget {
 
 class _BodePlotState extends State<BodePlot> {
   List<DataPoint> frequencyData = [];
-  late final String _apiUrl;
 
   @override
   void initState() {
     super.initState();
-    _apiUrl = 'http://192.168.147.214:5000/api/freqres/1';
     fetchData(); // Fetch data from the Flask server when the widget initializes
   }
 
   void fetchData() async {
-    final uri = Uri.parse(_apiUrl);
-    final response = await http.get(uri);
+    final response =
+        await http.get(Uri.parse('http://192.168.147.214:5000/api/freqres/1'));
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       setState(() {
@@ -59,6 +57,8 @@ class _BodePlotState extends State<BodePlot> {
                   charts.TickSpec(1, label: '10'),
                   charts.TickSpec(2, label: '100'),
                   charts.TickSpec(3, label: '1000'),
+                  charts.TickSpec(4, label: '100000'),
+                  charts.TickSpec(5, label: '10000000'),
                   // Add more tick values as needed
                 ],
               ),
