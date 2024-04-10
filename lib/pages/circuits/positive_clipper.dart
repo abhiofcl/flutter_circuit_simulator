@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:http/http.dart' as http;
+import 'constants.dart' as Constants;
 
 class PosClipper extends StatefulWidget {
   // final int circuitkey;
@@ -13,7 +14,7 @@ class PosClipper extends StatefulWidget {
 
 class _PosClipperState extends State<PosClipper> {
   final _formKey = GlobalKey<FormState>();
-  double _resistorVal = 0.0;
+  // double _resistorVal = 0.0;
   double _sourceVoltVal = 0.0;
   List<double> timeData = [];
   List<double> n1Data = [];
@@ -21,8 +22,8 @@ class _PosClipperState extends State<PosClipper> {
   late final String _apiUrl;
   bool _showPopup = false;
   double _resistorValue = 0.0;
-  final double _capacitorValue = 0.0;
-  String _showValue = '';
+  // final double _capacitorValue = 0.0;
+  // String _showValue = '';
   void _openPopup() {
     setState(() {
       _showPopup = true;
@@ -41,14 +42,14 @@ class _PosClipperState extends State<PosClipper> {
       return;
     }
     _formKey.currentState!.save();
-    _showValue = 'Resistor: $_resistorValue Ω, Capacitor: $_capacitorValue F';
+    // _showValue = 'Resistor: $_resistorValue Ω, Capacitor: $_capacitorValue F';
     _closePopup();
   }
 
   @override
   void initState() {
     super.initState();
-    _apiUrl = 'http://192.168.147.214:5000/api/clipper/2';
+    _apiUrl = Constants.apiUrl;
   }
 
   Future<void> fetchData() async {
@@ -69,8 +70,7 @@ class _PosClipperState extends State<PosClipper> {
   }
 
   LineChart buildLineChart() {
-    double maxYValue =
-        n1Data.followedBy(n2Data).reduce((a, b) => a > b ? a : b);
+    // double maxYValue =n1Data.followedBy(n2Data).reduce((a, b) => a > b ? a : b);
     return LineChart(
       LineChartData(
         lineBarsData: [

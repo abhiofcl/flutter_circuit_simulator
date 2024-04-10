@@ -50,7 +50,7 @@ class _PosPosClipperState extends State<PosPosClipper> {
   @override
   void initState() {
     super.initState();
-    _apiUrl = 'http://192.168.147.214:5000/api/bclipper/1';
+    _apiUrl = 'http://192.168.243.214:5000/api/bclipper/1';
   }
 
   Future<void> fetchData() async {
@@ -70,7 +70,12 @@ class _PosPosClipperState extends State<PosPosClipper> {
         n2Data = List<double>.from(data['yo']); //output data
       });
     } else {
-      print("some error");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Failed"),
+          duration: Duration(seconds: 3),
+        ),
+      );
     }
   }
 

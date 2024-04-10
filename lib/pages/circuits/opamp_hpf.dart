@@ -1,30 +1,32 @@
-import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:charts_flutter/flutter.dart' as charts;
 
-class NegPosClipper extends StatefulWidget {
-  // final int circuitkey;
+class PosPosClipper extends StatefulWidget {
+  const PosPosClipper({Key? key}) : super(key: key);
 
-  const NegPosClipper({Key? key}) : super(key: key);
   @override
-  _NegPosClipperState createState() => _NegPosClipperState();
+  _PosPosClipperState createState() => _PosPosClipperState();
 }
 
-class _NegPosClipperState extends State<NegPosClipper> {
-  final double _capacitorValue = 0.0;
-  String _showValue = '';
-  double _resistorVal = 0.0;
-
+class _PosPosClipperState extends State<PosPosClipper> {
   late final String _apiUrl;
-  double _sourceVoltVal = 0.0;
   double _resistorValue = 0.0;
+  double _sourceVoltVal = 0.0;
   double _biasedVolt = 0.0;
-  final _formKey = GlobalKey<FormState>();
-  List<double> timeData = [];
-  List<double> n1Data = [];
-  List<double> n2Data = [];
+  List<DataPoint> timeData = [];
+  List<DataPoint> n1Data = [];
+  List<DataPoint> n2Data = [];
   bool _showPopup = false;
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _apiUrl = 'http://192.168.243.214:5000/api/bclipper/1';
+  }
+
   void _openPopup() {
     setState(() {
       _showPopup = true;
@@ -38,96 +40,53 @@ class _NegPosClipperState extends State<NegPosClipper> {
   }
 
   Future<void> _onFormSubmitted() async {
-    final validation = _formKey.currentState!.validate();
-    if (!validation) {
-      return;
-    }
-    _formKey.currentState!.save();
+    // var validation = _formKey.currentState?.validate();
+    // if (!validation!) {
+    //   return;
+    // }
+    _formKey.currentState?.save();
     // _showValue = 'Resistor: $_resistorValue Ω, Capacitor: $_capacitorValue F';
     _closePopup();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _apiUrl = 'http://192.168.243.214:5000/api/bclipper/2';
-  }
-
   Future<void> fetchData() async {
     final uri = Uri.parse(_apiUrl);
-    final response = await http.post(uri,
-        body: jsonEncode({
-          "resistorV": _resistorValue,
-          "sourceVolt": _sourceVoltVal,
-          "biasedVoltVal": _biasedVolt
-        }));
-    // final response = await http.get(uri);
+    final response = await http.post(
+      uri,
+      body: jsonEncode({
+        "resistorV": _resistorValue,
+        "sourceVolt": _sourceVoltVal,
+        "biasedVoltVal": _biasedVolt,
+      }),
+    );
+
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       setState(() {
-        timeData = List<double>.from(data['time']);
-        n1Data = List<double>.from(data['yi']); //input data
-        n2Data = List<double>.from(data['yo']); //output data
+        timeData = List<DataPoint>.from(
+          data['time'].map((x) => DataPoint(x.toDouble(), 0.0)),
+        );
+        n1Data = List<DataPoint>.from(
+          data['yi'].map((x) => DataPoint(x.toDouble(), 0.0)),
+        );
+        n2Data = List<DataPoint>.from(
+          data['yo'].map((x) => DataPoint(x.toDouble(), 0.0)),
+        );
       });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Failed"),
-          duration: Duration(seconds: 3),
-        ),
-      );
+      print("Some error");
     }
-  }
-
-  LineChart buildLineChart() {
-    double maxYValue =
-        n1Data.followedBy(n2Data).reduce((a, b) => a > b ? a : b);
-    return LineChart(
-      LineChartData(
-        lineBarsData: [
-          LineChartBarData(
-            spots: List.generate(timeData.length, (index) {
-              return FlSpot(timeData[index], n1Data[index]);
-            }),
-            isCurved: true,
-            color: Colors.blue,
-            belowBarData: BarAreaData(show: false),
-          ),
-          LineChartBarData(
-            spots: List.generate(timeData.length, (index) {
-              return FlSpot(timeData[index], n2Data[index]);
-            }),
-            isCurved: true,
-            color: Colors.red,
-            belowBarData: BarAreaData(show: false),
-          ),
-        ],
-        titlesData: const FlTitlesData(
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-            ),
-          ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Negative biased positive clipper"),
+        title: const Text("Positive biased positive clipper"),
       ),
       body: Stack(
         children: [
           Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Image(
                 image: AssetImage('assets/images/circuit.png'),
@@ -138,38 +97,45 @@ class _NegPosClipperState extends State<NegPosClipper> {
                 },
                 child: const Text('Fetch Data'),
               ),
-              const SizedBox(height: 20),
               if (timeData.isNotEmpty && n1Data.isNotEmpty && n2Data.isNotEmpty)
-                Container(
-                  height: 300,
-                  width: 300,
-                  child: buildLineChart(),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: charts.LineChart(
+                      _createSeries(),
+                      animate: true,
+                      defaultRenderer: charts.LineRendererConfig(
+                        includePoints: true,
+                      ),
+                      domainAxis: charts.NumericAxisSpec(
+                        tickProviderSpec: charts.BasicNumericTickProviderSpec(
+                          desiredTickCount: 5,
+                        ),
+                      ),
+                      primaryMeasureAxis: charts.NumericAxisSpec(
+                        tickProviderSpec: charts.BasicNumericTickProviderSpec(
+                          desiredTickCount: 5,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text("Go back"),
-              ),
             ],
           ),
           _showPopup
               ? Positioned(
-                  // Adjust positioning based on your needs
                   top: 100.0,
                   left: 50.0,
                   child: Material(
                     elevation: 5.0,
                     borderRadius: BorderRadius.circular(10.0),
                     child: Form(
-                      key: _formKey,
                       child: Container(
                         width: 250.0,
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: Column(
-                            mainAxisSize:
-                                MainAxisSize.min, // Avoid exceeding screen size
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               const Text(
                                 'Enter Values',
@@ -181,10 +147,10 @@ class _NegPosClipperState extends State<NegPosClipper> {
                                   labelText: 'Resistor Value (Ω)',
                                 ),
                                 keyboardType: TextInputType.number,
-                                onSaved: (value) {
+                                onChanged: (value) {
                                   setState(() {
                                     _resistorValue =
-                                        double.tryParse(value!) ?? 0.0;
+                                        double.tryParse(value) ?? 0.0;
                                   });
                                 },
                               ),
@@ -194,10 +160,10 @@ class _NegPosClipperState extends State<NegPosClipper> {
                                   labelText: 'Input Voltage(V)',
                                 ),
                                 keyboardType: TextInputType.number,
-                                onSaved: (value) {
+                                onChanged: (value) {
                                   setState(() {
                                     _sourceVoltVal =
-                                        double.tryParse(value!) ?? 0.0;
+                                        double.tryParse(value) ?? 0.0;
                                   });
                                 },
                               ),
@@ -207,10 +173,9 @@ class _NegPosClipperState extends State<NegPosClipper> {
                                   labelText: 'Biasing Voltage(V)',
                                 ),
                                 keyboardType: TextInputType.number,
-                                onSaved: (value) {
+                                onChanged: (value) {
                                   setState(() {
-                                    _biasedVolt =
-                                        double.tryParse(value!) ?? 0.0;
+                                    _biasedVolt = double.tryParse(value) ?? 0.0;
                                   });
                                 },
                               ),
@@ -218,7 +183,6 @@ class _NegPosClipperState extends State<NegPosClipper> {
                               ElevatedButton(
                                 onPressed: () {
                                   _onFormSubmitted();
-                                  // sendData();
                                 },
                                 child: const Text('OK'),
                               ),
@@ -233,9 +197,39 @@ class _NegPosClipperState extends State<NegPosClipper> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _openPopup,
+        onPressed: () {
+          setState(() {
+            _showPopup = !_showPopup;
+          });
+        },
         child: const Icon(Icons.add),
       ),
     );
   }
+
+  List<charts.Series<DataPoint, double>> _createSeries() {
+    return [
+      charts.Series<DataPoint, double>(
+        id: 'yi',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (DataPoint data, _) => data.x,
+        measureFn: (DataPoint data, _) => data.y,
+        data: n1Data,
+      ),
+      charts.Series<DataPoint, double>(
+        id: 'yo',
+        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+        domainFn: (DataPoint data, _) => data.x,
+        measureFn: (DataPoint data, _) => data.y,
+        data: n2Data,
+      ),
+    ];
+  }
+}
+
+class DataPoint {
+  final double x;
+  final double y;
+
+  DataPoint(this.x, this.y);
 }

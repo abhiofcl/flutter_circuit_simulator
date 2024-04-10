@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:http/http.dart' as http;
+import 'constants.dart' as Constants;
 
 class NinVOpamp extends StatefulWidget {
   const NinVOpamp({
@@ -48,7 +49,7 @@ class _NinVOpampState extends State<NinVOpamp> {
   @override
   void initState() {
     super.initState();
-    _apiUrl = 'http://192.168.147.214:5000/api/opamp/1';
+    _apiUrl = Constants.apiUrl;
   }
 
   Future<void> fetchData() async {

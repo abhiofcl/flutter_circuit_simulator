@@ -38,7 +38,7 @@ class _BodePlotState extends State<BodePlot> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bode Plot Magnitude Graph'),
+        title: const Text('Bode Plot Magnitude Graph'),
       ),
       body: Center(
         child: SizedBox(
@@ -50,7 +50,7 @@ class _BodePlotState extends State<BodePlot> {
             defaultRenderer: charts.LineRendererConfig(
               includePoints: true,
             ),
-            domainAxis: charts.NumericAxisSpec(
+            domainAxis: const charts.NumericAxisSpec(
               tickProviderSpec: charts.StaticNumericTickProviderSpec(
                 // Provide custom tick values for the x-axis
                 [
@@ -67,7 +67,7 @@ class _BodePlotState extends State<BodePlot> {
                 labelAnchor: charts.TickLabelAnchor.after,
               ),
             ),
-            primaryMeasureAxis: charts.NumericAxisSpec(
+            primaryMeasureAxis: const charts.NumericAxisSpec(
               tickProviderSpec: charts.BasicNumericTickProviderSpec(
                 zeroBound: false,
               ),
