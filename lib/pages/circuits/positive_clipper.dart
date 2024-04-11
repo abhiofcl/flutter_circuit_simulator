@@ -49,7 +49,7 @@ class _PosClipperState extends State<PosClipper> {
   @override
   void initState() {
     super.initState();
-    _apiUrl = Constants.apiUrl;
+    _apiUrl = '${Constants.apiUrl}/api/clipper/1';
   }
 
   Future<void> fetchData() async {

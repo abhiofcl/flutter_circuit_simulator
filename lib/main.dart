@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.blue,
             title: const Text("Circuit Simulator"),
           ),
-          body: MyMenu(),
+          body: const HPF(),
         ),
       ),
     );

@@ -1,22 +1,20 @@
-import 'dart:convert';
-
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:http/http.dart' as http;
-
 import 'constants.dart' as Constants;
 
-class NinVOpamp extends StatefulWidget {
-  const NinVOpamp({
-    Key? key,
-  }) : super(key: key);
+class PosClamper extends StatefulWidget {
+  // final int circuitkey;
+
+  const PosClamper({Key? key}) : super(key: key);
   @override
-  _NinVOpampState createState() => _NinVOpampState();
+  _PosClamperState createState() => _PosClamperState();
 }
 
-class _NinVOpampState extends State<NinVOpamp> {
+class _PosClamperState extends State<PosClamper> {
   final _formKey = GlobalKey<FormState>();
-  double _resistorVal = 0.0;
+  // double _resistorVal = 0.0;
   double _sourceVoltVal = 0.0;
   List<double> timeData = [];
   List<double> n1Data = [];
@@ -24,8 +22,8 @@ class _NinVOpampState extends State<NinVOpamp> {
   late final String _apiUrl;
   bool _showPopup = false;
   double _resistorValue = 0.0;
-  final double _capacitorValue = 0.0;
-  String _showValue = '';
+  // final double _capacitorValue = 0.0;
+  // String _showValue = '';
   void _openPopup() {
     setState(() {
       _showPopup = true;
@@ -44,22 +42,22 @@ class _NinVOpampState extends State<NinVOpamp> {
       return;
     }
     _formKey.currentState!.save();
-    _showValue = 'Resistor: $_resistorValue Ω, Capacitor: $_capacitorValue F';
+    // _showValue = 'Resistor: $_resistorValue Ω, Capacitor: $_capacitorValue F';
     _closePopup();
   }
 
   @override
   void initState() {
     super.initState();
-    _apiUrl = '${Constants.apiUrl}/api/opamp/1';
+    _apiUrl = '${Constants.apiUrl}/api/clamper/1';
   }
 
   Future<void> fetchData() async {
     final uri = Uri.parse(_apiUrl);
+    final response = await http.get(uri);
     // final response = await http.post(uri,
     //     body: jsonEncode(
     //         {"resistorV": _resistorValue, "sourceVolt": _sourceVoltVal}));
-    final response = await http.get(uri);
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       setState(() {
@@ -79,6 +77,7 @@ class _NinVOpampState extends State<NinVOpamp> {
       LineChartData(
         lineBarsData: [
           LineChartBarData(
+            barWidth: 4,
             spots: List.generate(timeData.length, (index) {
               return FlSpot(timeData[index], n1Data[index]);
             }),
@@ -87,6 +86,7 @@ class _NinVOpampState extends State<NinVOpamp> {
             belowBarData: BarAreaData(show: false),
           ),
           LineChartBarData(
+            barWidth: 4,
             spots: List.generate(timeData.length, (index) {
               return FlSpot(timeData[index], n2Data[index]);
             }),
@@ -115,7 +115,7 @@ class _NinVOpampState extends State<NinVOpamp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Non inverting Amplifier"),
+        title: const Text("Positive Clamper"),
       ),
       body: Stack(
         children: [
@@ -138,12 +138,12 @@ class _NinVOpampState extends State<NinVOpamp> {
                   width: 300,
                   child: buildLineChart(),
                 ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text("Go back"),
-              ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     Navigator.pop(context);
+              //   },
+              //   child: const Text("Go back"),
+              // ),
             ],
           ),
           _showPopup

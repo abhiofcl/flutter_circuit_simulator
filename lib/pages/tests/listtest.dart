@@ -1,11 +1,14 @@
+import 'package:flutter/material.dart';
+
+import 'package:circuit_simulator/pages/circuits/neg_clamper.dart';
 import 'package:circuit_simulator/pages/circuits/neg_negb.dart';
 import 'package:circuit_simulator/pages/circuits/neg_posb.dart';
 import 'package:circuit_simulator/pages/circuits/negative_clipper.dart';
 import 'package:circuit_simulator/pages/circuits/ninv_opamp.dart';
+import 'package:circuit_simulator/pages/circuits/pos_clamper.dart';
 import 'package:circuit_simulator/pages/circuits/pos_negb.dart';
 import 'package:circuit_simulator/pages/circuits/pos_posb.dart';
 import 'package:circuit_simulator/pages/circuits/positive_clipper.dart';
-import 'package:flutter/material.dart';
 
 class MyMenu extends StatelessWidget {
   const MyMenu({super.key});
@@ -17,7 +20,7 @@ class MyMenu extends StatelessWidget {
         title: const Text('Clipper Menu'),
       ),
       body: ListView.builder(
-        itemCount: 7, // Two options in the list
+        itemCount: 9, // Two options in the list
         itemBuilder: (context, index) {
           final String optionText;
           final Widget targetWidget; // Widget to navigate to
@@ -47,6 +50,12 @@ class MyMenu extends StatelessWidget {
             case 6:
               optionText = "Non inverting Opamp amplifier";
               targetWidget = NinVOpamp();
+            case 7:
+              optionText = "Positive clamper";
+              targetWidget = PosClamper();
+            case 8:
+              optionText = "Negative Clamper";
+              targetWidget = NegClamper();
             default:
               optionText = 'Unknown Option';
               targetWidget = const Scaffold(

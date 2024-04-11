@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:http/http.dart' as http;
+import 'constants.dart' as Constants;
 
 class PosNegClipper extends StatefulWidget {
   // final int circuitkey;
@@ -50,7 +51,7 @@ class _PosNegClipperState extends State<PosNegClipper> {
   @override
   void initState() {
     super.initState();
-    _apiUrl = 'http://192.168.243.214:5000/api/bclipper/3';
+    _apiUrl = '${Constants.apiUrl}/api/bclipper/3';
   }
 
   Future<void> fetchData() async {

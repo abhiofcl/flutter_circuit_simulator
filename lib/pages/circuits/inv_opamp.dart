@@ -6,15 +6,15 @@ import 'package:http/http.dart' as http;
 
 import 'constants.dart' as Constants;
 
-class NinVOpamp extends StatefulWidget {
-  const NinVOpamp({
+class InvOpamp extends StatefulWidget {
+  const InvOpamp({
     Key? key,
   }) : super(key: key);
   @override
-  _NinVOpampState createState() => _NinVOpampState();
+  _InvOpampState createState() => _InvOpampState();
 }
 
-class _NinVOpampState extends State<NinVOpamp> {
+class _InvOpampState extends State<InvOpamp> {
   final _formKey = GlobalKey<FormState>();
   double _resistorVal = 0.0;
   double _sourceVoltVal = 0.0;
@@ -51,7 +51,7 @@ class _NinVOpampState extends State<NinVOpamp> {
   @override
   void initState() {
     super.initState();
-    _apiUrl = '${Constants.apiUrl}/api/opamp/1';
+    _apiUrl = '${Constants.apiUrl}/api/opamp/2';
   }
 
   Future<void> fetchData() async {
@@ -84,7 +84,9 @@ class _NinVOpampState extends State<NinVOpamp> {
             }),
             isCurved: true,
             color: Colors.blue,
-            belowBarData: BarAreaData(show: false),
+            belowBarData: BarAreaData(
+              show: false,
+            ),
           ),
           LineChartBarData(
             spots: List.generate(timeData.length, (index) {

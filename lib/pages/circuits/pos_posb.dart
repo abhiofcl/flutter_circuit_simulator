@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:http/http.dart' as http;
+import 'constants.dart' as Constants;
 
 class PosPosClipper extends StatefulWidget {
   // final int circuitkey;
@@ -50,7 +51,7 @@ class _PosPosClipperState extends State<PosPosClipper> {
   @override
   void initState() {
     super.initState();
-    _apiUrl = 'http://192.168.243.214:5000/api/bclipper/1';
+    _apiUrl = '${Constants.apiUrl}/api/bclipper/1';
   }
 
   Future<void> fetchData() async {
@@ -71,7 +72,7 @@ class _PosPosClipperState extends State<PosPosClipper> {
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text("Failed"),
           duration: Duration(seconds: 3),
         ),

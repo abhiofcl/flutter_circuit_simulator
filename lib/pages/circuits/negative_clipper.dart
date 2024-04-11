@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:http/http.dart' as http;
+import 'constants.dart' as Constants;
 
 class NegClipper extends StatefulWidget {
   const NegClipper({
@@ -48,7 +49,7 @@ class _NegClipperState extends State<NegClipper> {
   @override
   void initState() {
     super.initState();
-    _apiUrl = 'http://192.168.98.214:5000/api/clipper/1';
+    _apiUrl = '${Constants.apiUrl}/api/clipper/2';
   }
 
   Future<void> fetchData() async {

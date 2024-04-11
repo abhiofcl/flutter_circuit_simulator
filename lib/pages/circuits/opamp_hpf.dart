@@ -2,15 +2,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'constants.dart' as Constants;
 
-class PosPosClipper extends StatefulWidget {
-  const PosPosClipper({Key? key}) : super(key: key);
+class HPF extends StatefulWidget {
+  const HPF({Key? key}) : super(key: key);
 
   @override
-  _PosPosClipperState createState() => _PosPosClipperState();
+  _HPFState createState() => _HPFState();
 }
 
-class _PosPosClipperState extends State<PosPosClipper> {
+class _HPFState extends State<HPF> {
   late final String _apiUrl;
   double _resistorValue = 0.0;
   double _sourceVoltVal = 0.0;
@@ -24,7 +25,7 @@ class _PosPosClipperState extends State<PosPosClipper> {
   @override
   void initState() {
     super.initState();
-    _apiUrl = 'http://192.168.243.214:5000/api/bclipper/1';
+    _apiUrl = '${Constants.apiUrl}/api/clamper/1';
   }
 
   void _openPopup() {
@@ -51,14 +52,15 @@ class _PosPosClipperState extends State<PosPosClipper> {
 
   Future<void> fetchData() async {
     final uri = Uri.parse(_apiUrl);
-    final response = await http.post(
-      uri,
-      body: jsonEncode({
-        "resistorV": _resistorValue,
-        "sourceVolt": _sourceVoltVal,
-        "biasedVoltVal": _biasedVolt,
-      }),
-    );
+    final response = await http.get(uri);
+    // final response = await http.post(
+    //   uri,
+    //   body: jsonEncode({
+    //     "resistorV": _resistorValue,
+    //     "sourceVolt": _sourceVoltVal,
+    //     "biasedVoltVal": _biasedVolt,
+    //   }),
+    // );
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
@@ -82,15 +84,12 @@ class _PosPosClipperState extends State<PosPosClipper> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Positive biased positive clipper"),
+        title: const Text("Charts test"),
       ),
       body: Stack(
         children: [
           Column(
             children: [
-              const Image(
-                image: AssetImage('assets/images/circuit.png'),
-              ),
               ElevatedButton(
                 onPressed: () async {
                   await fetchData();
