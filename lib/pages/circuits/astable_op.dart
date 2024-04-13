@@ -6,15 +6,15 @@ import 'package:http/http.dart' as http;
 
 import 'constants.dart' as Constants;
 
-class InvOpamp extends StatefulWidget {
-  const InvOpamp({
+class AstableOP extends StatefulWidget {
+  const AstableOP({
     Key? key,
   }) : super(key: key);
   @override
-  _InvOpampState createState() => _InvOpampState();
+  _AstableOPState createState() => _AstableOPState();
 }
 
-class _InvOpampState extends State<InvOpamp> {
+class _AstableOPState extends State<AstableOP> {
   final _formKey = GlobalKey<FormState>();
   double _resistorVal = 0.0;
   double _sourceVoltVal = 0.0;
@@ -51,7 +51,7 @@ class _InvOpampState extends State<InvOpamp> {
   @override
   void initState() {
     super.initState();
-    _apiUrl = '${Constants.apiUrl}/api/opamp/2';
+    _apiUrl = '${Constants.apiUrl}/api/opamp/astable/1';
   }
 
   Future<void> fetchData() async {
@@ -82,22 +82,25 @@ class _InvOpampState extends State<InvOpamp> {
             spots: List.generate(timeData.length, (index) {
               return FlSpot(timeData[index], n1Data[index]);
             }),
-            isCurved: true,
+            isCurved: false,
             color: Colors.blue,
-            belowBarData: BarAreaData(
-              show: false,
-            ),
+            // barWidth: 0.5,
+            belowBarData: BarAreaData(show: false),
           ),
           LineChartBarData(
             spots: List.generate(timeData.length, (index) {
               return FlSpot(timeData[index], n2Data[index]);
             }),
-            isCurved: true,
+            isCurved: false,
             color: Colors.red,
             belowBarData: BarAreaData(show: false),
           ),
         ],
         titlesData: const FlTitlesData(
+          topTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
@@ -117,9 +120,9 @@ class _InvOpampState extends State<InvOpamp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Inverting Amplifier"),
+        title: const Text("Astable multivibrator Amplifier"),
       ),
-      body: Stack(
+      body: ListView(
         children: [
           Column(
             // mainAxisAlignment: MainAxisAlignment.center,
@@ -136,16 +139,17 @@ class _InvOpampState extends State<InvOpamp> {
               const SizedBox(height: 20),
               if (timeData.isNotEmpty && n1Data.isNotEmpty && n2Data.isNotEmpty)
                 Container(
-                  height: 300,
-                  width: 300,
+                  padding: EdgeInsets.all(8),
+                  height: 450,
+                  width: 450,
                   child: buildLineChart(),
                 ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text("Go back"),
-              ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     Navigator.pop(context);
+              //   },
+              //   child: const Text("Go back"),
+              // ),
             ],
           ),
           _showPopup

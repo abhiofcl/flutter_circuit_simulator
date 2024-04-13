@@ -84,6 +84,7 @@ class _NinVOpampState extends State<NinVOpamp> {
             }),
             isCurved: true,
             color: Colors.blue,
+            barWidth: 0.5,
             belowBarData: BarAreaData(show: false),
           ),
           LineChartBarData(
@@ -96,6 +97,10 @@ class _NinVOpampState extends State<NinVOpamp> {
           ),
         ],
         titlesData: const FlTitlesData(
+          topTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
@@ -117,7 +122,7 @@ class _NinVOpampState extends State<NinVOpamp> {
       appBar: AppBar(
         title: const Text("Non inverting Amplifier"),
       ),
-      body: Stack(
+      body: ListView(
         children: [
           Column(
             // mainAxisAlignment: MainAxisAlignment.center,
@@ -134,16 +139,17 @@ class _NinVOpampState extends State<NinVOpamp> {
               const SizedBox(height: 20),
               if (timeData.isNotEmpty && n1Data.isNotEmpty && n2Data.isNotEmpty)
                 Container(
-                  height: 300,
-                  width: 300,
+                  padding: EdgeInsets.all(8),
+                  height: 450,
+                  width: 450,
                   child: buildLineChart(),
                 ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text("Go back"),
-              ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     Navigator.pop(context);
+              //   },
+              //   child: const Text("Go back"),
+              // ),
             ],
           ),
           _showPopup

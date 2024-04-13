@@ -1,3 +1,6 @@
+import 'package:circuit_simulator/pages/circuits/astable_op.dart';
+import 'package:circuit_simulator/pages/circuits/inv_opamp.dart';
+import 'package:circuit_simulator/pages/circuits/schmitt.dart';
 import 'package:flutter/material.dart';
 
 import 'package:circuit_simulator/pages/circuits/neg_clamper.dart';
@@ -20,7 +23,7 @@ class MyMenu extends StatelessWidget {
         title: const Text('Clipper Menu'),
       ),
       body: ListView.builder(
-        itemCount: 9, // Two options in the list
+        itemCount: 12, // Two options in the list
         itemBuilder: (context, index) {
           final String optionText;
           final Widget targetWidget; // Widget to navigate to
@@ -47,15 +50,25 @@ class MyMenu extends StatelessWidget {
             case 5:
               optionText = "Negative Clipper Negative Bias";
               targetWidget = NegNegClipper();
+
             case 6:
-              optionText = "Non inverting Opamp amplifier";
-              targetWidget = NinVOpamp();
-            case 7:
               optionText = "Positive clamper";
               targetWidget = PosClamper();
-            case 8:
+            case 7:
               optionText = "Negative Clamper";
               targetWidget = NegClamper();
+            case 8:
+              optionText = "Non inverting Opamp amplifier";
+              targetWidget = NinVOpamp();
+            case 9:
+              optionText = "Inverting Opamp amplifier";
+              targetWidget = InvOpamp();
+            case 10:
+              optionText = "Astable Multibrator using Opamp amplifier";
+              targetWidget = AstableOP();
+            case 11:
+              optionText = "Schmitt Trigger Opamp amplifier";
+              targetWidget = Schmitt();
             default:
               optionText = 'Unknown Option';
               targetWidget = const Scaffold(

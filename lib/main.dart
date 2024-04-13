@@ -1,7 +1,8 @@
 import 'package:circuit_simulator/pages/circuit_list.dart';
-import 'package:circuit_simulator/pages/circuits/opamp_hpf.dart';
+// import 'package:circuit_simulator/pages/circuits/opamp_hpf.dart';
 import 'package:circuit_simulator/pages/tests/form_post.dart';
 import 'package:circuit_simulator/pages/tests/freqtest.dart';
+import 'package:circuit_simulator/pages/tests/homepage.dart';
 import 'package:circuit_simulator/pages/tests/listtest.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.blue,
             title: const Text("Circuit Simulator"),
           ),
-          body: const HPF(),
+          body: MyMenu(),
         ),
       ),
     );
@@ -55,11 +56,11 @@ class Welcome extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MyMenu(),
+                      builder: (context) => const MyMenu(),
                     ),
                   );
                 },
-                child: Text("Start Simulate"))
+                child: const Text("Start Simulate"))
           ],
         ),
       ),
