@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math' as math;
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -7,22 +6,21 @@ import 'package:http/http.dart' as http;
 
 import 'constants.dart' as Constants;
 
-class LpfOP extends StatefulWidget {
-  const LpfOP({
+class MonoOP extends StatefulWidget {
+  const MonoOP({
     Key? key,
   }) : super(key: key);
   @override
-  _LpfOPState createState() => _LpfOPState();
+  _MonoOPState createState() => _MonoOPState();
 }
 
-class _LpfOPState extends State<LpfOP> {
+class _MonoOPState extends State<MonoOP> {
   final _formKey = GlobalKey<FormState>();
   double _resistorVal = 0.0;
   double _sourceVoltVal = 0.0;
   List<double> timeData = [];
   List<double> n1Data = [];
   List<double> n2Data = [];
-  List<double> freqs = [10, 100, 1000, 10000, 100000];
   late final String _apiUrl;
   bool _showPopup = false;
   double _resistorValue = 0.0;
@@ -53,7 +51,7 @@ class _LpfOPState extends State<LpfOP> {
   @override
   void initState() {
     super.initState();
-    _apiUrl = '${Constants.apiUrl}/api/opamp/lpf/1';
+    _apiUrl = '${Constants.apiUrl}/api/opamp/monostable/1';
   }
 
   Future<void> fetchData() async {
@@ -66,7 +64,7 @@ class _LpfOPState extends State<LpfOP> {
       final Map<String, dynamic> data = json.decode(response.body);
       setState(() {
         timeData = List<double>.from(data['time']);
-        // n1Data = List<double>.from(data['yi']); //input data
+        n1Data = List<double>.from(data['yi']); //input data
         n2Data = List<double>.from(data['yo']); //output data
       });
     } else {
@@ -82,10 +80,18 @@ class _LpfOPState extends State<LpfOP> {
         lineBarsData: [
           LineChartBarData(
             spots: List.generate(timeData.length, (index) {
-              return FlSpot(
-                  timeData[index], math.log(n2Data[index]) / math.log(10));
+              return FlSpot(timeData[index], n1Data[index]);
             }),
-            isCurved: true,
+            isCurved: false,
+            color: Colors.blue,
+            barWidth: 6,
+            belowBarData: BarAreaData(show: false),
+          ),
+          LineChartBarData(
+            spots: List.generate(timeData.length, (index) {
+              return FlSpot(timeData[index], n2Data[index]);
+            }),
+            isCurved: false,
             color: Colors.red,
             barWidth: 6,
             belowBarData: BarAreaData(show: false),
@@ -115,7 +121,7 @@ class _LpfOPState extends State<LpfOP> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("LPF"),
+        title: const Text("Astable multivibrator Amplifier"),
       ),
       body: ListView(
         children: [
@@ -132,7 +138,7 @@ class _LpfOPState extends State<LpfOP> {
                 child: const Text('Fetch Data'),
               ),
               const SizedBox(height: 20),
-              if (timeData.isNotEmpty && n2Data.isNotEmpty)
+              if (timeData.isNotEmpty && n1Data.isNotEmpty && n2Data.isNotEmpty)
                 Container(
                   padding: EdgeInsets.all(8),
                   height: 450,

@@ -1,6 +1,10 @@
 import 'package:circuit_simulator/pages/circuits/astable_op.dart';
 import 'package:circuit_simulator/pages/circuits/inv_opamp.dart';
+import 'package:circuit_simulator/pages/circuits/monostable_op.dart';
+import 'package:circuit_simulator/pages/circuits/opamp_lpf.dart';
 import 'package:circuit_simulator/pages/circuits/schmitt.dart';
+import 'package:circuit_simulator/pages/circuits/triangle_gen_op.dart';
+import 'package:circuit_simulator/pages/tests/freqtest.dart';
 import 'package:flutter/material.dart';
 
 import 'package:circuit_simulator/pages/circuits/neg_clamper.dart';
@@ -23,7 +27,7 @@ class MyMenu extends StatelessWidget {
         title: const Text('Clipper Menu'),
       ),
       body: ListView.builder(
-        itemCount: 12, // Two options in the list
+        itemCount: 16, // Two options in the list
         itemBuilder: (context, index) {
           final String optionText;
           final Widget targetWidget; // Widget to navigate to
@@ -64,11 +68,23 @@ class MyMenu extends StatelessWidget {
               optionText = "Inverting Opamp amplifier";
               targetWidget = InvOpamp();
             case 10:
-              optionText = "Astable Multibrator using Opamp amplifier";
+              optionText = "Astable Multivibrator using Opamp ";
               targetWidget = AstableOP();
             case 11:
-              optionText = "Schmitt Trigger Opamp amplifier";
+              optionText = "Schmitt Trigger Opamp ";
               targetWidget = Schmitt();
+            case 12:
+              optionText = "Monostable Multivibrator using Opamp ";
+              targetWidget = MonoOP();
+            case 13:
+              optionText = "Triangle Generator using Opamp ";
+              targetWidget = TriangleOP();
+            case 14:
+              optionText = "LPF using Opamp ";
+              targetWidget = LpfOP();
+            case 15:
+              optionText = "Frequency curve test";
+              targetWidget = BodePlot();
             default:
               optionText = 'Unknown Option';
               targetWidget = const Scaffold(

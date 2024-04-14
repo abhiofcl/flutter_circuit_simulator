@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math' as math;
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -7,22 +6,21 @@ import 'package:http/http.dart' as http;
 
 import 'constants.dart' as Constants;
 
-class LpfOP extends StatefulWidget {
-  const LpfOP({
+class TriangleOP extends StatefulWidget {
+  const TriangleOP({
     Key? key,
   }) : super(key: key);
   @override
-  _LpfOPState createState() => _LpfOPState();
+  _TriangleOPState createState() => _TriangleOPState();
 }
 
-class _LpfOPState extends State<LpfOP> {
+class _TriangleOPState extends State<TriangleOP> {
   final _formKey = GlobalKey<FormState>();
   double _resistorVal = 0.0;
   double _sourceVoltVal = 0.0;
   List<double> timeData = [];
   List<double> n1Data = [];
   List<double> n2Data = [];
-  List<double> freqs = [10, 100, 1000, 10000, 100000];
   late final String _apiUrl;
   bool _showPopup = false;
   double _resistorValue = 0.0;
@@ -53,7 +51,7 @@ class _LpfOPState extends State<LpfOP> {
   @override
   void initState() {
     super.initState();
-    _apiUrl = '${Constants.apiUrl}/api/opamp/lpf/1';
+    _apiUrl = '${Constants.apiUrl}/api/opamp/triangle/1';
   }
 
   Future<void> fetchData() async {
@@ -75,17 +73,16 @@ class _LpfOPState extends State<LpfOP> {
   }
 
   LineChart buildLineChart() {
-    double maxYValue =
-        n1Data.followedBy(n2Data).reduce((a, b) => a > b ? a : b);
+    // double maxYValue =
+    //     n1Data.followedBy(n2Data).reduce((a, b) => a > b ? a : b);
     return LineChart(
       LineChartData(
         lineBarsData: [
           LineChartBarData(
             spots: List.generate(timeData.length, (index) {
-              return FlSpot(
-                  timeData[index], math.log(n2Data[index]) / math.log(10));
+              return FlSpot(timeData[index], n2Data[index]);
             }),
-            isCurved: true,
+            isCurved: false,
             color: Colors.red,
             barWidth: 6,
             belowBarData: BarAreaData(show: false),
@@ -115,7 +112,7 @@ class _LpfOPState extends State<LpfOP> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("LPF"),
+        title: const Text("Triangle Generator"),
       ),
       body: ListView(
         children: [

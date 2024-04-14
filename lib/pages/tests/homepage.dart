@@ -3,6 +3,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../circuits/constants.dart' as Constants;
+import 'dart:math' as math;
 
 class LineChartPage extends StatefulWidget {
   @override
@@ -10,24 +11,29 @@ class LineChartPage extends StatefulWidget {
 }
 
 class _LineChartPageState extends State<LineChartPage> {
-  Future<List<Map<String, dynamic>>>? _dataFuture;
+  // Future<List<Map<String, dynamic>>>? _dataFuture;
+  List<DataPoint> frequencyData = [];
+  late final String _apiUrl;
 
   @override
   void initState() {
     super.initState();
-    try {
-      _dataFuture = fetchData();
-    } catch (identifier) {
-      print("some isues");
-    }
+    _apiUrl = '${Constants.apiUrl}/api/opamp/integrator/1';
+    // _dataFuture = fetchData();
   }
 
-  Future<List<Map<String, dynamic>>> fetchData() async {
-    final response =
-        await http.get(Uri.parse('${Constants.apiUrl}/api/clamper/1'));
+  void fetchData() async {
+    final uri = Uri.parse('${Constants.apiUrl}/api/opamp/lpf/1');
+    final response = await http.get(uri);
     if (response.statusCode == 200) {
-      final List<dynamic> dataList = json.decode(response.body);
-      return List<Map<String, dynamic>>.from(dataList);
+      final responseData = json.decode(response.body);
+      setState(() {
+        frequencyData = responseData
+            .map<DataPoint>(
+                (item) => DataPoint(item['frequency'], item['magnitude']))
+            .toList();
+      });
+      // return List<Map<String, dynamic>>.from(dataList as Iterable);
     } else {
       throw Exception(
           'Failed to load data. Status code: ${response.statusCode}');
@@ -40,36 +46,38 @@ class _LineChartPageState extends State<LineChartPage> {
       appBar: AppBar(
         title: Text('Line Chart'),
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: _dataFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else {
-            final List<Map<String, dynamic>> dataList = snapshot.data!;
-            final List<DataPoint> chartData = dataList.map((map) {
-              final double time = map['time']!.toDouble();
-              final double yo = map['yo']!.toDouble();
-              return DataPoint(time, yo);
-            }).toList();
-            return Container(
-              height: 300,
-              width: 300,
+      body: ListView(
+        children: [
+          ElevatedButton(
+              onPressed: () {
+                fetchData();
+              },
+              child: Text("fetch")),
+          Center(
+            child: SizedBox(
+              width: 400,
+              height: 400,
               child: charts.LineChart(
-                _createSeries(chartData),
-                animate: false,
+                _createSeries(),
+                animate: true,
                 defaultRenderer: charts.LineRendererConfig(
-                  includePoints: true,
+                  includePoints: false,
                 ),
-                domainAxis: charts.NumericAxisSpec(
-                  tickProviderSpec: charts.BasicNumericTickProviderSpec(
-                    zeroBound: false,
+                domainAxis: const charts.NumericAxisSpec(
+                  tickProviderSpec: charts.StaticNumericTickProviderSpec(
+                    // Provide custom tick values for the x-axis
+                    [
+                      charts.TickSpec(1, label: '10'),
+                      charts.TickSpec(2, label: '100'),
+                      charts.TickSpec(3, label: '1000'),
+                      charts.TickSpec(4, label: '10000'),
+                      charts.TickSpec(5, label: '1000000'),
+                      // Add more tick values as needed
+                    ],
+                  ),
+                  renderSpec: charts.GridlineRendererSpec(
+                    labelRotation: 45,
+                    labelAnchor: charts.TickLabelAnchor.after,
                   ),
                 ),
                 primaryMeasureAxis: const charts.NumericAxisSpec(
@@ -78,29 +86,30 @@ class _LineChartPageState extends State<LineChartPage> {
                   ),
                 ),
               ),
-            );
-          }
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  List<charts.Series<DataPoint, double>> _createSeries(List<DataPoint> data) {
+  List<charts.Series<DataPoint, double>> _createSeries() {
     return [
       charts.Series<DataPoint, double>(
-        id: 'yo',
+        id: 'Magnitude',
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (DataPoint data, _) => data.x,
-        measureFn: (DataPoint data, _) => data.y,
-        data: data,
+        domainFn: (DataPoint data, _) =>
+            math.log(data.frequency) / math.log(10),
+        measureFn: (DataPoint data, _) => data.magnitude,
+        data: frequencyData,
       ),
     ];
   }
 }
 
 class DataPoint {
-  final double x;
-  final double y;
+  final double frequency;
+  final double magnitude;
 
-  DataPoint(this.x, this.y);
+  DataPoint(this.frequency, this.magnitude);
 }

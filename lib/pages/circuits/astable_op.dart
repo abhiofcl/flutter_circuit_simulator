@@ -84,7 +84,7 @@ class _AstableOPState extends State<AstableOP> {
             }),
             isCurved: false,
             color: Colors.blue,
-            // barWidth: 0.5,
+            barWidth: 6,
             belowBarData: BarAreaData(show: false),
           ),
           LineChartBarData(
@@ -93,6 +93,7 @@ class _AstableOPState extends State<AstableOP> {
             }),
             isCurved: false,
             color: Colors.red,
+            barWidth: 6,
             belowBarData: BarAreaData(show: false),
           ),
         ],
