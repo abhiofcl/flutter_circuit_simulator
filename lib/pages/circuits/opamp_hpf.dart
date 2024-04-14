@@ -2,42 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'constants.dart' as Constants;
+import '../circuits/constants.dart' as Constants;
+import 'dart:math' as math;
 
-class LineChartPage extends StatefulWidget {
+class HpfOP extends StatefulWidget {
   @override
-  _LineChartPageState createState() => _LineChartPageState();
+  _HpfOPState createState() => _HpfOPState();
 }
 
-class _LineChartPageState extends State<LineChartPage> {
-  List<DataPoint> timeData = [];
-  List<DataPoint> n1Data = [];
-  List<DataPoint> n2Data = [];
+class _HpfOPState extends State<HpfOP> {
+  // Future<List<Map<String, dynamic>>>? _dataFuture;
+  List<DataPoint> frequencyData = [];
+  late final String _apiUrl;
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    _apiUrl = '${Constants.apiUrl}/api/opamp/integrator/1';
+    // _dataFuture = fetchData();
   }
 
-  Future<void> fetchData() async {
-    final response =
-        await http.get(Uri.parse('${Constants.apiUrl}/api/clamper/1'));
+  void fetchData() async {
+    final uri = Uri.parse('${Constants.apiUrl}/api/opamp/hpf/1');
+    final response = await http.get(uri);
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
+      final responseData = json.decode(response.body);
       setState(() {
-        timeData = List<DataPoint>.from(
-          data['time'].map<DataPoint>((x) => DataPoint(x.toDouble(), 0.0)),
-        );
-        n1Data = List<DataPoint>.from(
-          data['yi'].map<DataPoint>((x) => DataPoint(x.toDouble(), 0.0)),
-        );
-        n2Data = List<DataPoint>.from(
-          data['yo'].map<DataPoint>((x) => DataPoint(x.toDouble(), 0.0)),
-        );
+        frequencyData = responseData
+            .map<DataPoint>(
+                (item) => DataPoint(item['frequency'], item['magnitude']))
+            .toList();
       });
+      // return List<Map<String, dynamic>>.from(dataList as Iterable);
     } else {
-      print("Failed to load data. Status code: ${response.statusCode}");
+      throw Exception(
+          'Failed to load data. Status code: ${response.statusCode}');
     }
   }
 
@@ -47,34 +46,50 @@ class _LineChartPageState extends State<LineChartPage> {
       appBar: AppBar(
         title: Text('Line Chart'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (timeData.isNotEmpty && n1Data.isNotEmpty && n2Data.isNotEmpty)
-              Container(
-                height: 300,
-                width: 300,
-                child: charts.LineChart(
-                  _createSeries(),
-                  animate: true,
-                  defaultRenderer: charts.LineRendererConfig(
-                    includePoints: true,
+      body: ListView(
+        children: [
+          const Image(image: AssetImage('assets/images/circuit.png')),
+          ElevatedButton(
+              onPressed: () {
+                fetchData();
+              },
+              child: Text("fetch")),
+          Center(
+            child: SizedBox(
+              width: 400,
+              height: 400,
+              child: charts.LineChart(
+                _createSeries(),
+                animate: true,
+                defaultRenderer: charts.LineRendererConfig(
+                  includePoints: false,
+                ),
+                domainAxis: const charts.NumericAxisSpec(
+                  tickProviderSpec: charts.StaticNumericTickProviderSpec(
+                    // Provide custom tick values for the x-axis
+                    [
+                      charts.TickSpec(1, label: '10'),
+                      charts.TickSpec(2, label: '100'),
+                      charts.TickSpec(3, label: '1000'),
+                      charts.TickSpec(4, label: '10000'),
+                      charts.TickSpec(5, label: '1000000'),
+                      // Add more tick values as needed
+                    ],
                   ),
-                  domainAxis: charts.NumericAxisSpec(
-                    tickProviderSpec: charts.BasicNumericTickProviderSpec(
-                      desiredTickCount: 5,
-                    ),
+                  renderSpec: charts.GridlineRendererSpec(
+                    labelRotation: 45,
+                    labelAnchor: charts.TickLabelAnchor.after,
                   ),
-                  primaryMeasureAxis: charts.NumericAxisSpec(
-                    tickProviderSpec: charts.BasicNumericTickProviderSpec(
-                      desiredTickCount: 5,
-                    ),
+                ),
+                primaryMeasureAxis: const charts.NumericAxisSpec(
+                  tickProviderSpec: charts.BasicNumericTickProviderSpec(
+                    zeroBound: false,
                   ),
                 ),
               ),
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -82,26 +97,20 @@ class _LineChartPageState extends State<LineChartPage> {
   List<charts.Series<DataPoint, double>> _createSeries() {
     return [
       charts.Series<DataPoint, double>(
-        id: 'yi',
+        id: 'Magnitude',
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (DataPoint data, _) => data.x,
-        measureFn: (DataPoint data, _) => data.y,
-        data: n1Data,
-      ),
-      charts.Series<DataPoint, double>(
-        id: 'yo',
-        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
-        domainFn: (DataPoint data, _) => data.x,
-        measureFn: (DataPoint data, _) => data.y,
-        data: n2Data,
+        domainFn: (DataPoint data, _) =>
+            math.log(data.frequency) / math.log(10),
+        measureFn: (DataPoint data, _) => data.magnitude,
+        data: frequencyData,
       ),
     ];
   }
 }
 
 class DataPoint {
-  final double x;
-  final double y;
+  final double frequency;
+  final double magnitude;
 
-  DataPoint(this.x, this.y);
+  DataPoint(this.frequency, this.magnitude);
 }

@@ -1,222 +1,116 @@
+import 'package:flutter/material.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../circuits/constants.dart' as Constants;
 import 'dart:math' as math;
 
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
-import 'constants.dart' as Constants;
-
 class LpfOP extends StatefulWidget {
-  const LpfOP({
-    Key? key,
-  }) : super(key: key);
   @override
   _LpfOPState createState() => _LpfOPState();
 }
 
 class _LpfOPState extends State<LpfOP> {
-  final _formKey = GlobalKey<FormState>();
-  double _resistorVal = 0.0;
-  double _sourceVoltVal = 0.0;
-  List<double> timeData = [];
-  List<double> n1Data = [];
-  List<double> n2Data = [];
-  List<double> freqs = [10, 100, 1000, 10000, 100000];
+  // Future<List<Map<String, dynamic>>>? _dataFuture;
+  List<DataPoint> frequencyData = [];
   late final String _apiUrl;
-  bool _showPopup = false;
-  double _resistorValue = 0.0;
-  final double _capacitorValue = 0.0;
-  String _showValue = '';
-  void _openPopup() {
-    setState(() {
-      _showPopup = true;
-    });
-  }
-
-  void _closePopup() {
-    setState(() {
-      _showPopup = false;
-    });
-  }
-
-  Future<void> _onFormSubmitted() async {
-    final validation = _formKey.currentState!.validate();
-    if (!validation) {
-      return;
-    }
-    _formKey.currentState!.save();
-    _showValue = 'Resistor: $_resistorValue Ω, Capacitor: $_capacitorValue F';
-    _closePopup();
-  }
 
   @override
   void initState() {
     super.initState();
-    _apiUrl = '${Constants.apiUrl}/api/opamp/lpf/1';
+    _apiUrl = '${Constants.apiUrl}/api/opamp/integrator/1';
+    // _dataFuture = fetchData();
   }
 
-  Future<void> fetchData() async {
-    final uri = Uri.parse(_apiUrl);
-    // final response = await http.post(uri,
-    //     body: jsonEncode(
-    //         {"resistorV": _resistorValue, "sourceVolt": _sourceVoltVal}));
+  void fetchData() async {
+    final uri = Uri.parse('${Constants.apiUrl}/api/opamp/lpf/1');
     final response = await http.get(uri);
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
+      final responseData = json.decode(response.body);
       setState(() {
-        timeData = List<double>.from(data['time']);
-        // n1Data = List<double>.from(data['yi']); //input data
-        n2Data = List<double>.from(data['yo']); //output data
+        frequencyData = responseData
+            .map<DataPoint>(
+                (item) => DataPoint(item['frequency'], item['magnitude']))
+            .toList();
       });
+      // return List<Map<String, dynamic>>.from(dataList as Iterable);
     } else {
-      throw Exception('Failed to load data');
+      throw Exception(
+          'Failed to load data. Status code: ${response.statusCode}');
     }
-  }
-
-  LineChart buildLineChart() {
-    double maxYValue =
-        n1Data.followedBy(n2Data).reduce((a, b) => a > b ? a : b);
-    return LineChart(
-      LineChartData(
-        lineBarsData: [
-          LineChartBarData(
-            spots: List.generate(timeData.length, (index) {
-              return FlSpot(
-                  timeData[index], math.log(n2Data[index]) / math.log(10));
-            }),
-            isCurved: true,
-            color: Colors.red,
-            barWidth: 6,
-            belowBarData: BarAreaData(show: false),
-          ),
-        ],
-        titlesData: const FlTitlesData(
-          topTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-            ),
-          ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("LPF"),
+        title: Text('Line Chart'),
       ),
       body: ListView(
         children: [
-          Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Image(
-                image: AssetImage('assets/images/circuit.png'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  await fetchData();
-                },
-                child: const Text('Fetch Data'),
-              ),
-              const SizedBox(height: 20),
-              if (timeData.isNotEmpty && n2Data.isNotEmpty)
-                Container(
-                  padding: EdgeInsets.all(8),
-                  height: 450,
-                  width: 450,
-                  child: buildLineChart(),
+          const Image(image: AssetImage('assets/images/circuit.png')),
+          ElevatedButton(
+              onPressed: () {
+                fetchData();
+              },
+              child: Text("fetch")),
+          Center(
+            child: SizedBox(
+              width: 400,
+              height: 400,
+              child: charts.LineChart(
+                _createSeries(),
+                animate: true,
+                defaultRenderer: charts.LineRendererConfig(
+                  includePoints: false,
                 ),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     Navigator.pop(context);
-              //   },
-              //   child: const Text("Go back"),
-              // ),
-            ],
-          ),
-          _showPopup
-              ? Positioned(
-                  // Adjust positioning based on your needs
-                  top: 100.0,
-                  left: 50.0,
-                  child: Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Container(
-                        width: 250.0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            mainAxisSize:
-                                MainAxisSize.min, // Avoid exceeding screen size
-                            children: [
-                              const Text(
-                                'Enter Values',
-                                style: TextStyle(fontSize: 18.0),
-                              ),
-                              const SizedBox(height: 10.0),
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                  labelText: 'Resistor Value (Ω)',
-                                ),
-                                keyboardType: TextInputType.number,
-                                onSaved: (value) {
-                                  setState(() {
-                                    _resistorValue =
-                                        double.tryParse(value!) ?? 0.0;
-                                  });
-                                },
-                              ),
-                              const SizedBox(height: 10.0),
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                  labelText: 'Input Voltage(V)',
-                                ),
-                                keyboardType: TextInputType.number,
-                                onSaved: (value) {
-                                  setState(() {
-                                    _sourceVoltVal =
-                                        double.tryParse(value!) ?? 0.0;
-                                  });
-                                },
-                              ),
-                              const SizedBox(height: 10.0),
-                              ElevatedButton(
-                                onPressed: () {
-                                  _onFormSubmitted();
-                                  // sendData();
-                                },
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                domainAxis: const charts.NumericAxisSpec(
+                  tickProviderSpec: charts.StaticNumericTickProviderSpec(
+                    // Provide custom tick values for the x-axis
+                    [
+                      charts.TickSpec(1, label: '10'),
+                      charts.TickSpec(2, label: '100'),
+                      charts.TickSpec(3, label: '1000'),
+                      charts.TickSpec(4, label: '10000'),
+                      charts.TickSpec(5, label: '1000000'),
+                      // Add more tick values as needed
+                    ],
                   ),
-                )
-              : const SizedBox(),
+                  renderSpec: charts.GridlineRendererSpec(
+                    labelRotation: 45,
+                    labelAnchor: charts.TickLabelAnchor.after,
+                  ),
+                ),
+                primaryMeasureAxis: const charts.NumericAxisSpec(
+                  tickProviderSpec: charts.BasicNumericTickProviderSpec(
+                    zeroBound: false,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _openPopup,
-        child: const Icon(Icons.add),
       ),
     );
   }
+
+  List<charts.Series<DataPoint, double>> _createSeries() {
+    return [
+      charts.Series<DataPoint, double>(
+        id: 'Magnitude',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (DataPoint data, _) =>
+            math.log(data.frequency) / math.log(10),
+        measureFn: (DataPoint data, _) => data.magnitude,
+        data: frequencyData,
+      ),
+    ];
+  }
+}
+
+class DataPoint {
+  final double frequency;
+  final double magnitude;
+
+  DataPoint(this.frequency, this.magnitude);
 }
