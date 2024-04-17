@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:http/http.dart' as http;
+// ignore: library_prefixes
 import 'constants.dart' as Constants;
 
 class NegClamper extends StatefulWidget {
@@ -54,9 +55,10 @@ class _NegClamperState extends State<NegClamper> {
 
   Future<void> fetchData() async {
     final uri = Uri.parse(_apiUrl);
-    final response = await http.post(uri,
-        body: jsonEncode(
-            {"resistorV": _resistorValue, "sourceVolt": _sourceVoltVal}));
+    final response = await http.get(uri);
+    // final response = await http.post(uri,
+    //     body: jsonEncode(
+    //         {"resistorV": _resistorValue, "sourceVolt": _sourceVoltVal}));
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       setState(() {

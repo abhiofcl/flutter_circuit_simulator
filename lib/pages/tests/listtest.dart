@@ -1,4 +1,6 @@
 import 'package:circuit_simulator/pages/circuits/astable_op.dart';
+import 'package:circuit_simulator/pages/circuits/differentiatior_op.dart';
+import 'package:circuit_simulator/pages/circuits/integrator_op.dart';
 import 'package:circuit_simulator/pages/circuits/inv_opamp.dart';
 import 'package:circuit_simulator/pages/circuits/monostable_op.dart';
 import 'package:circuit_simulator/pages/circuits/opamp_hpf.dart';
@@ -25,10 +27,10 @@ class MyMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Clipper Menu'),
+        title: const Text('Selection Menu'),
       ),
       body: ListView.builder(
-        itemCount: 17, // Two options in the list
+        itemCount: 19, // Two options in the list
         itemBuilder: (context, index) {
           final String optionText;
           final Widget targetWidget; // Widget to navigate to
@@ -87,6 +89,12 @@ class MyMenu extends StatelessWidget {
               optionText = "HPF using Opamp ";
               targetWidget = HpfOP();
             case 16:
+              optionText = "Integrator using Opamp ";
+              targetWidget = IntgratorOp();
+            case 17:
+              optionText = "Differentiator using Opamp ";
+              targetWidget = DifferentiatorOp();
+            case 18:
               optionText = "Frequency curve test";
               targetWidget = BodePlot();
 
