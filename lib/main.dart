@@ -1,10 +1,13 @@
 // import 'package:circuit_simulator/pages/circuit_list.dart';
 // import 'package:circuit_simulator/pages/circuits/opamp_hpf.dart';
 // import 'package:circuit_simulator/pages/tests/form_post.dart';
+import 'package:circuit_simulator/pages/chatbot/chat_page.dart';
+import 'package:circuit_simulator/pages/chatbot/consts.dart';
 import 'package:circuit_simulator/pages/tests/freqtest.dart';
 import 'package:circuit_simulator/pages/tests/homepage.dart';
 import 'package:circuit_simulator/pages/tests/listtest.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 
 import 'widgets/fabtest.dart';
 // import 'dart:convert';
@@ -14,6 +17,7 @@ import 'widgets/fabtest.dart';
 // import './api.dart';
 // import './widgets/op_chart.dart';
 void main() {
+  Gemini.init(apiKey: GEMINI_API_KEY);
   runApp(MyApp());
 }
 

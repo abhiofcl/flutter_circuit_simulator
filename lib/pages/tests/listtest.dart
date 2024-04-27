@@ -5,6 +5,7 @@ import 'package:circuit_simulator/pages/circuits/inv_opamp.dart';
 import 'package:circuit_simulator/pages/circuits/monostable_op.dart';
 import 'package:circuit_simulator/pages/circuits/opamp_hpf.dart';
 import 'package:circuit_simulator/pages/circuits/opamp_lpf.dart';
+import 'package:circuit_simulator/pages/circuits/posc_posbias.dart';
 import 'package:circuit_simulator/pages/circuits/schmitt.dart';
 import 'package:circuit_simulator/pages/circuits/triangle_gen_op.dart';
 import 'package:circuit_simulator/pages/tests/freqtest.dart';
@@ -30,7 +31,7 @@ class MyMenu extends StatelessWidget {
         title: const Text('Selection Menu'),
       ),
       body: ListView.builder(
-        itemCount: 19, // Two options in the list
+        itemCount: 20, // Two options in the list
         itemBuilder: (context, index) {
           final String optionText;
           final Widget targetWidget; // Widget to navigate to
@@ -97,6 +98,9 @@ class MyMenu extends StatelessWidget {
             case 18:
               optionText = "Frequency curve test";
               targetWidget = BodePlot();
+            case 19:
+              optionText = "Positive biased positive clamper";
+              targetWidget = PosPosClamper();
 
             default:
               optionText = 'Unknown Option';
