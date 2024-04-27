@@ -13,12 +13,12 @@ class HpfOP extends StatefulWidget {
 class _HpfOPState extends State<HpfOP> {
   // Future<List<Map<String, dynamic>>>? _dataFuture;
   List<DataPoint> frequencyData = [];
-  late final String _apiUrl;
+  // late final String _apiUrl;
 
   @override
   void initState() {
     super.initState();
-    _apiUrl = '${Constants.apiUrl}/api/opamp/integrator/1';
+    // _apiUrl = '${Constants.apiUrl}/api/opamp/integrator/1';
     // _dataFuture = fetchData();
   }
 
