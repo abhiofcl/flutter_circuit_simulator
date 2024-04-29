@@ -132,7 +132,8 @@ class _PosPosClamperState extends State<PosPosClamper> {
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Image(
-                image: AssetImage('assets/images/circuit.png'),
+                image:
+                    AssetImage('assets/images/positive_clamper_pos_bias.png'),
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -143,8 +144,8 @@ class _PosPosClamperState extends State<PosPosClamper> {
               const SizedBox(height: 20),
               if (timeData.isNotEmpty && n1Data.isNotEmpty && n2Data.isNotEmpty)
                 Container(
-                  height: 300,
-                  width: 300,
+                  height: 400,
+                  width: 400,
                   child: buildLineChart(),
                 ),
               ElevatedButton(

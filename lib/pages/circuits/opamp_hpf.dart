@@ -48,7 +48,7 @@ class _HpfOPState extends State<HpfOP> {
       ),
       body: ListView(
         children: [
-          const Image(image: AssetImage('assets/images/circuit.png')),
+          const Image(image: AssetImage('assets/images/hpf_opamp.png')),
           ElevatedButton(
               onPressed: () {
                 fetchData();

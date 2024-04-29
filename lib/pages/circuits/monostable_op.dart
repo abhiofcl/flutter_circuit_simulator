@@ -129,7 +129,7 @@ class _MonoOPState extends State<MonoOP> {
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Image(
-                image: AssetImage('assets/images/circuit.png'),
+                image: AssetImage('assets/images/monostable_opamp.png'),
               ),
               ElevatedButton(
                 onPressed: () async {

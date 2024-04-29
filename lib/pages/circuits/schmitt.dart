@@ -120,7 +120,7 @@ class _SchmittState extends State<Schmitt> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Astable multivibrator Amplifier"),
+        title: const Text("Schmitt Trigger"),
       ),
       body: ListView(
         children: [
@@ -128,7 +128,7 @@ class _SchmittState extends State<Schmitt> {
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Image(
-                image: AssetImage('assets/images/circuit.png'),
+                image: AssetImage('assets/images/schmitt_opamp.png'),
               ),
               ElevatedButton(
                 onPressed: () async {

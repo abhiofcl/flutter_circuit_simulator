@@ -129,7 +129,7 @@ class _AstableOPState extends State<AstableOP> {
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Image(
-                image: AssetImage('assets/images/circuit.png'),
+                image: AssetImage('assets/images/astable_opamp.png'),
               ),
               ElevatedButton(
                 onPressed: () async {

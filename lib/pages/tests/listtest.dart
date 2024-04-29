@@ -3,8 +3,11 @@ import 'package:circuit_simulator/pages/circuits/differentiatior_op.dart';
 import 'package:circuit_simulator/pages/circuits/integrator_op.dart';
 import 'package:circuit_simulator/pages/circuits/inv_opamp.dart';
 import 'package:circuit_simulator/pages/circuits/monostable_op.dart';
+import 'package:circuit_simulator/pages/circuits/negc_negbias.dart';
+import 'package:circuit_simulator/pages/circuits/negc_posbias.dart';
 import 'package:circuit_simulator/pages/circuits/opamp_hpf.dart';
 import 'package:circuit_simulator/pages/circuits/opamp_lpf.dart';
+import 'package:circuit_simulator/pages/circuits/posc_negbias.dart';
 import 'package:circuit_simulator/pages/circuits/posc_posbias.dart';
 import 'package:circuit_simulator/pages/circuits/schmitt.dart';
 import 'package:circuit_simulator/pages/circuits/triangle_gen_op.dart';
@@ -31,7 +34,7 @@ class MyMenu extends StatelessWidget {
         title: const Text('Selection Menu'),
       ),
       body: ListView.builder(
-        itemCount: 20, // Two options in the list
+        itemCount: 23, // Two options in the list
         itemBuilder: (context, index) {
           final String optionText;
           final Widget targetWidget; // Widget to navigate to
@@ -101,7 +104,15 @@ class MyMenu extends StatelessWidget {
             case 19:
               optionText = "Positive biased positive clamper";
               targetWidget = PosPosClamper();
-
+            case 20:
+              optionText = "Negative biased positive clamper";
+              targetWidget = PosNegClamper();
+            case 21:
+              optionText = "Positive biased Negative clamper";
+              targetWidget = NegPosClamper();
+            case 22:
+              optionText = "Negative biased Negative clamper";
+              targetWidget = NegNegClamper();
             default:
               optionText = 'Unknown Option';
               targetWidget = const Scaffold(

@@ -131,7 +131,8 @@ class _NegNegClamperState extends State<NegNegClamper> {
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Image(
-                image: AssetImage('assets/images/circuit.png'),
+                image:
+                    AssetImage('assets/images/negative_clamper_neg_bias.png'),
               ),
               ElevatedButton(
                 onPressed: () async {

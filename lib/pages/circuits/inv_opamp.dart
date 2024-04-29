@@ -125,7 +125,7 @@ class _InvOpampState extends State<InvOpamp> {
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Image(
-                image: AssetImage('assets/images/circuit.png'),
+                image: AssetImage('assets/images/inverting_opamp.png'),
               ),
               ElevatedButton(
                 onPressed: () async {

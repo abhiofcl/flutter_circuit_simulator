@@ -128,7 +128,7 @@ class _NinVOpampState extends State<NinVOpamp> {
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Image(
-                image: AssetImage('assets/images/circuit.png'),
+                image: AssetImage('assets/images/non inverting opamp.png'),
               ),
               ElevatedButton(
                 onPressed: () async {

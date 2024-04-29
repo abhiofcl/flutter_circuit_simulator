@@ -130,8 +130,8 @@ class _PosClipperState extends State<PosClipper> {
               const SizedBox(height: 20),
               if (timeData.isNotEmpty && n1Data.isNotEmpty && n2Data.isNotEmpty)
                 Container(
-                  height: 300,
-                  width: 300,
+                  height: 400,
+                  width: 400,
                   child: buildLineChart(),
                 ),
               ElevatedButton(

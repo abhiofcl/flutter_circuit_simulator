@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+// ignore: library_prefixes
 import '../circuits/constants.dart' as Constants;
 import 'dart:math' as math;
 
@@ -48,7 +49,7 @@ class _LpfOPState extends State<LpfOP> {
       ),
       body: ListView(
         children: [
-          const Image(image: AssetImage('assets/images/circuit.png')),
+          const Image(image: AssetImage('assets/images/lpf_opamp.png')),
           ElevatedButton(
               onPressed: () {
                 fetchData();
