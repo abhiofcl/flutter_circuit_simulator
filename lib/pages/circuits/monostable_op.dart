@@ -121,7 +121,7 @@ class _MonoOPState extends State<MonoOP> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Astable multivibrator Amplifier"),
+        title: const Text("Monostable multivibrator using Opamp"),
       ),
       body: ListView(
         children: [
@@ -139,11 +139,14 @@ class _MonoOPState extends State<MonoOP> {
               ),
               const SizedBox(height: 20),
               if (timeData.isNotEmpty && n1Data.isNotEmpty && n2Data.isNotEmpty)
-                Container(
-                  padding: EdgeInsets.all(8),
-                  height: 450,
-                  width: 450,
-                  child: buildLineChart(),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    height: 450,
+                    width: 550,
+                    child: buildLineChart(),
+                  ),
                 ),
               // ElevatedButton(
               //   onPressed: () {

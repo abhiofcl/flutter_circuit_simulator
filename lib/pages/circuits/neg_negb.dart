@@ -123,7 +123,7 @@ class _NegNegClipperState extends State<NegNegClipper> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Negative Clipper Negative Bias"),
+        title: const Text(" Negative Bias Negative Clipper"),
       ),
       body: Stack(
         children: [
@@ -131,7 +131,7 @@ class _NegNegClipperState extends State<NegNegClipper> {
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Image(
-                image: AssetImage('assets/images/circuit.png'),
+                image: AssetImage('assets/images/neg_posbias.png'),
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -141,10 +141,14 @@ class _NegNegClipperState extends State<NegNegClipper> {
               ),
               const SizedBox(height: 20),
               if (timeData.isNotEmpty && n1Data.isNotEmpty && n2Data.isNotEmpty)
-                Container(
-                  height: 300,
-                  width: 300,
-                  child: buildLineChart(),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    height: 450,
+                    width: 550,
+                    child: buildLineChart(),
+                  ),
                 ),
               ElevatedButton(
                 onPressed: () {

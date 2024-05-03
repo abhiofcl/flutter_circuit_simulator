@@ -45,7 +45,7 @@ class _LpfOPState extends State<LpfOP> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Line Chart'),
+        title: Text('LPF using Opamp'),
       ),
       body: ListView(
         children: [

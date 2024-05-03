@@ -120,7 +120,7 @@ class _TriangleOPState extends State<TriangleOP> {
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Image(
-                image: AssetImage('assets/images/circuit.png'),
+                image: AssetImage('assets/images/triangle.png'),
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -130,11 +130,14 @@ class _TriangleOPState extends State<TriangleOP> {
               ),
               const SizedBox(height: 20),
               if (timeData.isNotEmpty && n2Data.isNotEmpty)
-                Container(
-                  padding: EdgeInsets.all(8),
-                  height: 450,
-                  width: 450,
-                  child: buildLineChart(),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    height: 450,
+                    width: 550,
+                    child: buildLineChart(),
+                  ),
                 ),
               // ElevatedButton(
               //   onPressed: () {

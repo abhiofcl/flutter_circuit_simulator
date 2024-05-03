@@ -104,6 +104,10 @@ class _PosPosClipperState extends State<PosPosClipper> {
           ),
         ],
         titlesData: const FlTitlesData(
+          topTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
@@ -125,13 +129,13 @@ class _PosPosClipperState extends State<PosPosClipper> {
       appBar: AppBar(
         title: const Text("Positive biased positive clipper"),
       ),
-      body: Stack(
+      body: ListView(
         children: [
           Column(
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Image(
-                image: AssetImage('assets/images/circuit.png'),
+                image: AssetImage('assets/images/pos_posbias.png'),
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -141,17 +145,15 @@ class _PosPosClipperState extends State<PosPosClipper> {
               ),
               const SizedBox(height: 20),
               if (timeData.isNotEmpty && n1Data.isNotEmpty && n2Data.isNotEmpty)
-                Container(
-                  height: 300,
-                  width: 300,
-                  child: buildLineChart(),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    height: 450,
+                    width: 550,
+                    child: buildLineChart(),
+                  ),
                 ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text("Go back"),
-              ),
             ],
           ),
           _showPopup

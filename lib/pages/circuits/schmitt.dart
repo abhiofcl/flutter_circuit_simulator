@@ -103,11 +103,13 @@ class _SchmittState extends State<Schmitt> {
           rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
+              reservedSize: 40,
               showTitles: true,
             ),
           ),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
+              reservedSize: 30,
               showTitles: true,
             ),
           ),
@@ -120,7 +122,7 @@ class _SchmittState extends State<Schmitt> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Schmitt Trigger"),
+        title: const Text("Schmitt Trigger "),
       ),
       body: ListView(
         children: [
@@ -138,11 +140,14 @@ class _SchmittState extends State<Schmitt> {
               ),
               const SizedBox(height: 20),
               if (timeData.isNotEmpty && n1Data.isNotEmpty && n2Data.isNotEmpty)
-                Container(
-                  padding: EdgeInsets.all(8),
-                  height: 450,
-                  width: 450,
-                  child: buildLineChart(),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    height: 450,
+                    width: 550,
+                    child: buildLineChart(),
+                  ),
                 ),
               // ElevatedButton(
               //   onPressed: () {

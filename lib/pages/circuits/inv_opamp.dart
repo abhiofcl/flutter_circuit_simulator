@@ -23,7 +23,8 @@ class _InvOpampState extends State<InvOpamp> {
   List<double> n2Data = [];
   late final String _apiUrl;
   bool _showPopup = false;
-  double _resistorValue = 0.0;
+  double _resistorValue1 = 0.0;
+  double _resistorValue2 = 0.0;
   final double _capacitorValue = 0.0;
   String _showValue = '';
   void _openPopup() {
@@ -44,7 +45,7 @@ class _InvOpampState extends State<InvOpamp> {
       return;
     }
     _formKey.currentState!.save();
-    _showValue = 'Resistor: $_resistorValue Ω, Capacitor: $_capacitorValue F';
+    _showValue = 'Resistor: $_resistorValue1 Ω, Capacitor: $_capacitorValue F';
     _closePopup();
   }
 
@@ -56,10 +57,13 @@ class _InvOpampState extends State<InvOpamp> {
 
   Future<void> fetchData() async {
     final uri = Uri.parse(_apiUrl);
-    // final response = await http.post(uri,
-    //     body: jsonEncode(
-    //         {"resistorV": _resistorValue, "sourceVolt": _sourceVoltVal}));
-    final response = await http.get(uri);
+    final response = await http.post(uri,
+        body: jsonEncode({
+          "R1": _resistorValue1,
+          "R2": _resistorValue2,
+          "sourceVolt": _sourceVoltVal
+        }));
+    // final response = await http.get(uri);
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       setState(() {
@@ -100,11 +104,13 @@ class _InvOpampState extends State<InvOpamp> {
         titlesData: const FlTitlesData(
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
+              reservedSize: 40,
               showTitles: true,
             ),
           ),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
+              reservedSize: 40,
               showTitles: true,
             ),
           ),
@@ -117,7 +123,7 @@ class _InvOpampState extends State<InvOpamp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Inverting Amplifier"),
+        title: const Text("Inverting Opamp Amplifier"),
       ),
       body: Stack(
         children: [
@@ -135,10 +141,14 @@ class _InvOpampState extends State<InvOpamp> {
               ),
               const SizedBox(height: 20),
               if (timeData.isNotEmpty && n1Data.isNotEmpty && n2Data.isNotEmpty)
-                Container(
-                  height: 300,
-                  width: 300,
-                  child: buildLineChart(),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    height: 450,
+                    width: 550,
+                    child: buildLineChart(),
+                  ),
                 ),
               ElevatedButton(
                 onPressed: () {
@@ -173,12 +183,25 @@ class _InvOpampState extends State<InvOpamp> {
                               const SizedBox(height: 10.0),
                               TextFormField(
                                 decoration: const InputDecoration(
-                                  labelText: 'Resistor Value (Ω)',
+                                  labelText: 'R1 (Ω)',
                                 ),
                                 keyboardType: TextInputType.number,
                                 onSaved: (value) {
                                   setState(() {
-                                    _resistorValue =
+                                    _resistorValue1 =
+                                        double.tryParse(value!) ?? 0.0;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 10.0),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'R2 (Ω)',
+                                ),
+                                keyboardType: TextInputType.number,
+                                onSaved: (value) {
+                                  setState(() {
+                                    _resistorValue2 =
                                         double.tryParse(value!) ?? 0.0;
                                   });
                                 },

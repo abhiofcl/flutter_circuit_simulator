@@ -129,7 +129,7 @@ class _IntgratorOpState extends State<IntgratorOp> {
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Image(
-                image: AssetImage('assets/images/circuit.png'),
+                image: AssetImage('assets/images/integrator.png'),
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -139,11 +139,14 @@ class _IntgratorOpState extends State<IntgratorOp> {
               ),
               const SizedBox(height: 20),
               if (timeData.isNotEmpty && n1Data.isNotEmpty && n2Data.isNotEmpty)
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  height: 450,
-                  width: 450,
-                  child: buildLineChart(),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    height: 450,
+                    width: 550,
+                    child: buildLineChart(),
+                  ),
                 ),
               // ElevatedButton(
               //   onPressed: () {

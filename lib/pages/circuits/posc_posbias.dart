@@ -105,6 +105,10 @@ class _PosPosClamperState extends State<PosPosClamper> {
           ),
         ],
         titlesData: const FlTitlesData(
+          topTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
@@ -126,7 +130,7 @@ class _PosPosClamperState extends State<PosPosClamper> {
       appBar: AppBar(
         title: const Text("Positive biased positive clamper"),
       ),
-      body: Stack(
+      body: ListView(
         children: [
           Column(
             // mainAxisAlignment: MainAxisAlignment.center,
@@ -143,10 +147,14 @@ class _PosPosClamperState extends State<PosPosClamper> {
               ),
               const SizedBox(height: 20),
               if (timeData.isNotEmpty && n1Data.isNotEmpty && n2Data.isNotEmpty)
-                Container(
-                  height: 400,
-                  width: 400,
-                  child: buildLineChart(),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    height: 450,
+                    width: 550,
+                    child: buildLineChart(),
+                  ),
                 ),
               ElevatedButton(
                 onPressed: () {

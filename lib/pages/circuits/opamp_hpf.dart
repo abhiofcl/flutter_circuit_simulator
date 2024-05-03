@@ -44,7 +44,7 @@ class _HpfOPState extends State<HpfOP> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Line Chart'),
+        title: Text('HPF using Opamp'),
       ),
       body: ListView(
         children: [

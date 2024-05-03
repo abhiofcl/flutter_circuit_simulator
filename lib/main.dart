@@ -1,13 +1,14 @@
-// import 'package:circuit_simulator/pages/chatbot/chat_page.dart';
-import 'package:circuit_simulator/pages/chatbot/consts.dart';
-import 'package:circuit_simulator/pages/tests/listtest.dart';
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 
-// import './api.dart';
-// import './widgets/op_chart.dart';
+import 'Welcome.dart';
+import 'consts.dart';
+
 void main() {
-  Gemini.init(apiKey: GEMINI_API_KEY);
+  Gemini.init(
+    apiKey: GEMINI_API_KEY,
+  );
   runApp(MyApp());
 }
 
@@ -27,35 +28,10 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.blue,
             title: const Text("Circuit Simulator"),
           ),
-          body: MyMenu(),
-        ),
-      ),
-    );
-  }
-}
-
-class Welcome extends StatelessWidget {
-  const Welcome({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("Circuit Simulator"),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MyMenu(),
-                    ),
-                  );
-                },
-                child: const Text("Start Simulate"))
-          ],
+          body: const DoubleBackToCloseApp(
+            snackBar: SnackBar(content: Text("Tap back again to exit the app")),
+            child: Welcome(),
+          ),
         ),
       ),
     );
